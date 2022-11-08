@@ -1,12 +1,33 @@
 import { galleryItems } from "./gallery-items.js";
-// Change code below this line
 
-console.log(galleryItems);
+const lightboxRef = document.querySelector(".gallery");
+const lightboxMarkup = createBoxItem(galleryItems);
+lightboxRef.insertAdjacentHTML(`afterbegin`, lightboxMarkup);
 
-import * as basicLightbox from "basiclightbox";
+function createBoxItem(galleryItems) {
+  return galleryItems
+    .map(
+      ({ preview, original, description }) =>
+        `<a class="gallery__item" href="${original}">
+                <img
+                class="gallery__image"
+                src="${preview}"
+                alt="${description}"
+                />
+            </a>`
+    )
+    .join("");
+}
 
-const instance = basicLightbox.create(`
-    <img src="assets/images/image.png" width="800" height="600">
-`);
+lightboxRef.addEventListener("click", onBoxRefClick);
 
-instance.show();
+function onBoxRefClick(event) {
+  event.preventDefault();
+  if (!event.target.classList.contains("gallery__image")) {
+    return;
+  }
+  const lightbox = new SimpleLightbox(".gallery a", {
+    captionsData: "alt",
+    captionDelay: 250,
+  });
+}
